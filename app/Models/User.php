@@ -19,7 +19,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
+        'id_card_number',
+        'username',
         'password',
     ];
 
@@ -41,4 +42,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    function role()
+    {
+        return $this->hasOne(Role::class, 'user_id', 'id');
+    }
+
+    function society()
+    {
+        return $this->hasOne(Societie::class, 'user_id', 'id');
+    }
 }

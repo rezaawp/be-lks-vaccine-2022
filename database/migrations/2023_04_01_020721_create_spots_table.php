@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Regional;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,14 +12,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('spots', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(Regional::class, 'regional_id');
+            $table->foreign('regional_id')->references('id')->on('regionals');
             $table->string('name');
-            $table->string('username')->unique()->nullable();
-            $table->char('id_card_number', 8)->unique()->nullable();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->text('address');
+            $table->tinyInteger('serve');
+            $table->integer('capcity');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('spots');
     }
 };

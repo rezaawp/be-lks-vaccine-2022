@@ -17,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+require __DIR__ . '/api/auth.php';
+require __DIR__ . '/api/consultation.php';
+require __DIR__ . '/api/vaccination.spot.php';
+require __DIR__ . '/api/vaccinations.php';
