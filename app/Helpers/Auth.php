@@ -24,6 +24,7 @@ class Auth
         return "no success";
     }
 
+    // Auth::user()
     static function user()
     {
         $token = request()->header('Authorization');

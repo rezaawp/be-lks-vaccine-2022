@@ -17,7 +17,7 @@ class SpotController extends Controller
      */
     public function index()
     {
-        // return DB::table('spot_vaccines')->rightJoin('vaccines', 'spot_vaccines.vaccine_id', '=', 'vaccines.id')->join('vaccines', 'vaccines.id', '=', 'spot_vaccines.id')->get();
+        return DB::table('spot_vaccines')->rightJoin('vaccines', 'spot_vaccines.vaccine_id', '=', 'vaccines.id')->get();
 
         $vaccine_table = Vaccine::all();
         $spot = Spot::with(['vaccine.vaccine'])->get()->map(function ($res, $index) use ($vaccine_table) {

@@ -13,7 +13,6 @@ class Spot extends Model
 
     function vaccine()
     {
-
         return $this->hasMany(SpotVaccine::class, 'spot_id');
     }
 }

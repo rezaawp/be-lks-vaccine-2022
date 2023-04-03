@@ -14,6 +14,7 @@ class SpotVaccine extends Model
 
     function vaccine()
     {
+        // return DB::table('spot_vaccines')->rightJoin('vaccines', 'spot_vaccines.vaccine_id', '=', 'vaccines.id')->get();
         return $this->belongsTo(Vaccine::class, 'vaccine_id', 'id');
     }
 }
