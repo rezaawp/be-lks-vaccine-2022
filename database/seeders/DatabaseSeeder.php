@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Consultation;
+use App\Models\Medical;
 use App\Models\Regional;
 use App\Models\Role;
 use App\Models\Societie;
@@ -135,5 +137,18 @@ class DatabaseSeeder extends Seeder
                 'vaccine_id' => $spot_vaccine['vaccine_id'],
             ]);
         }
+
+        Medical::create([
+            'spot_id' => 1,
+            'user_id' => 2,
+            'role' => 'doctor',
+        ]);
+
+        Consultation::create([
+            'society_id' => 1,
+            'disease_history' => 'disease_history',
+            'current_symptoms' => 'current_symptoms',
+            'status' => 'accepted'
+        ]);
     }
 }

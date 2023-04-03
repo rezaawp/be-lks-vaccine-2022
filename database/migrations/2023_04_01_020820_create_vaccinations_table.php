@@ -19,6 +19,8 @@ return new class extends Migration
             $table->id();
             $table->tinyInteger('dose');
             $table->date('date');
+            $table->enum('status', ['done', 'in_queue'])->default('in_queue');
+            $table->integer('queue')->nullable();
             $table->foreignIdFor(Societie::class, 'society_id');
             $table->foreignIdFor(Spot::class, 'spot_id');
             $table->foreignIdFor(Vaccine::class, 'vaccine_id');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Auth;
 use App\Helpers\Response;
+use App\Http\Resources\VaccinationResource;
 use App\Models\Consultation;
 use App\Models\Vaccination;
 use Exception;
@@ -12,26 +13,24 @@ use Illuminate\Support\Facades\Validator;
 
 class VaccinationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $society_id = Auth::society()['id'];
-        $vaccinations = Vaccination::where('');
+        $vaccinations = Vaccination::with(['medicals.user', 'vaccine', 'spot.regional'])->where('society_id', $society_id)->get();
+        $response = VaccinationResource::collection($vaccinations);
+
+        $result = [
+            'vaccinations' => $response
+        ];
+
+        return Response::json(200, 'Success get data', $result);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         try {
@@ -62,19 +61,34 @@ class VaccinationController extends Controller
             $vaccination = Vaccination::where('society_id', $society_id)->get();
             $last_vaccination = count($vaccination) > 0 ?  $vaccination[count($vaccination) - 1] : null;
 
+            // vaccinatation list based on date
+            $vaccination_list = $vaccination->filter(function ($item) use ($date) {
+                // return $item['id'] == 1;
+                return $item['date'] === $date;
+            });
+
+            // return $vaccination_list;
+            $queue = 1;
+
+            if ($vaccination_list || count($vaccination_list) > 0) {
+                $queue = count($vaccination_list) + 1;
+            }
+
             $_30hari = time() + (60 * 60 * 24 * 30);
             foreach ($vaccination as $item) {
-                if (strtotime($item['date']) < $_30hari) {
+                if (strtotime($item['date']) > $_30hari) {
                     return Response::json(401, 'Wait at least +30 days from 1st vaccinations');
                 };
             }
 
             $vaccine_id = 1;
+
             if ($last_vaccination) {
                 $vaccine_id = $last_vaccination['vaccine_id'] + 1;
             }
 
             $vaccination_stored = Vaccination::create([
+                'queue' => $queue,
                 'dose' => $vaccine_id,
                 'spot_id' => $spot_id,
                 'date' => $date,

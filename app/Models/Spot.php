@@ -15,4 +15,9 @@ class Spot extends Model
     {
         return $this->hasMany(SpotVaccine::class, 'spot_id');
     }
+
+    function regional()
+    {
+        return $this->belongsTo(Regional::class, 'regional_id', 'id');
+    }
 }

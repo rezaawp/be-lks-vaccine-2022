@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class, 'user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->enum('role', ['officer', 'doctor']);
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->timestamps();
         });
     }
