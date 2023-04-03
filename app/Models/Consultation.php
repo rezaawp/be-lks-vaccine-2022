@@ -10,4 +10,8 @@ class Consultation extends Model
     use HasFactory;
     protected $guarded = ['id'];
 
+    function medical()
+    {
+        return $this->belongsTo(Medical::class, 'doctor_id', 'id');
+    }
 }

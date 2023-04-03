@@ -14,10 +14,9 @@ class ConsultationController extends Controller
     public function index()
     {
         $society_id = Auth::society()['id'];
-        $consultations = Consultation::where('society_id', $society_id)->get();
+        $consultations = Consultation::with('medical.user')->where('society_id', $society_id)->get();
         return Response::json(200, 'Success get data', $consultations);
     }
-
 
     public function store(Request $request)
     {
