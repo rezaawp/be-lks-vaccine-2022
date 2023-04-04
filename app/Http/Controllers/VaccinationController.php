@@ -22,7 +22,7 @@ class VaccinationController extends Controller
             return Response::json(401, 'Invalid field', $validate->errors());
         }
 
-        $date = $req['date'] ? $req['date'] : date('Y-m-d');
+        $date = $req['date'];
         $spotId = $req['spot_id'];
 
         $_30Hari =  time() + (60 * 60 * 24 * 30);
