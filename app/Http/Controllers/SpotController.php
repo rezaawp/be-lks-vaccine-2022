@@ -18,25 +18,36 @@ class SpotController extends Controller
     public function index()
     {
         $vaccine_table = Vaccine::all();
-        $vaccine_tersedia = [];
-       
-        $spot = Spot::with(['vaccine.vaccine'])->get()->map(function ($res, $index) use ($vaccine_table) {
-         
-            foreach($vaccine_table as $list_vaccine){
-                    foreach($res->vaccine as $vaccine_rs){
-                        // echo $vaccine_rs->vaccine->name ."\n";
-                        
-                        if($list_vaccine->name == $vaccine_rs->vaccine->name){
-                            $vaccine_tersedia[$list_vaccine->name] = true;
+        
+            
+            $spot = Spot::with(['vaccine.vaccine'])->get()->map(function ($res, $index) use ($vaccine_table) {
+            
+            // variabel yang akan menampung daftar vaksin yang ada dan tidak ada di suatu rumah sakit
+            $vaccine_tersedia = [];
+
+            // membuat template vaksin tersedia, vaksin awalnya semuanya false
+            foreach ($vaccine_table as $list_vaccine) {
+                $vaccine_tersedia[$list_vaccine->name] = false;
+            }
+
+            // mengecek dan membandingkan daftar vaksin yang ada dengan vaksin yang tersedia di suatu rumah sakit
+            
+            foreach($vaccine_table as $list_vaccine){ // mengeluarkan semua list vaksin yang ada
+
+                    foreach($res->vaccine as $vaccine_rs){// mengeluarkan semua vaksin yang ada di rumah sakit tertentu
+
+                        if($list_vaccine->name == $vaccine_rs->vaccine->name){ // kalau list vaksin sama dengan vaksin yang ada di rumah sakit ( artinya vaksin tersebut ada di rumah sakit itu)
+                            $vaccine_tersedia[$list_vaccine->name] = true; // vaksin true
                             break;
-                        }else{
-                            $vaccine_tersedia[$list_vaccine->name] = false;
+                        }
+                        else{
+                            $vaccine_tersedia[$list_vaccine->name] = false; // kalau tidak ada, vaksin false
                         }
                     }
             }
 
             $res->available_vaccines =  $vaccine_tersedia;
-            unset($res->vaccine);
+            unset($res->vaccine); // hapus vaksin yang ada di dalam database sebelumnya
             return $res;
         });
         return Response::json(200, 'Success get spots', $spot);
