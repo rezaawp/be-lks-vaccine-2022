@@ -17,41 +17,30 @@ class SpotController extends Controller
      */
     public function index()
     {
-
-
         $vaccine_table = Vaccine::all();
+        $vaccine_tersedia = [];
+       
         $spot = Spot::with(['vaccine.vaccine'])->get()->map(function ($res, $index) use ($vaccine_table) {
+         
+            foreach($vaccine_table as $list_vaccine){
+                    foreach($res->vaccine as $vaccine_rs){
+                        // echo $vaccine_rs->vaccine->name ."\n";
+                        
+                        if($list_vaccine->name == $vaccine_rs->vaccine->name){
+                            $vaccine_tersedia[$list_vaccine->name] = true;
+                            break;
+                        }else{
+                            $vaccine_tersedia[$list_vaccine->name] = false;
+                        }
+                    }
+            }
 
-            $vaccine = collect($res->vaccine)->map(function ($v, $i) use ($vaccine_table) {
-                return [
-                    $v['vaccine']['name'] => true
-                ];
-            })->collapse();
-
-            $res->available_vaccines = $vaccine;
+            $res->available_vaccines =  $vaccine_tersedia;
             unset($res->vaccine);
             return $res;
         });
-
-
-        // Menambahkan vaccine yang tidak terdaftar = false
-        // $spot_result = $spot->map(function ($res) use ($vaccine_table) {
-        //     // $keys_vaccine = [];
-        //     if (count($res->available_vaccines)) {
-        //         $keys_vaccine = collect($res->available_vaccines)->keys();
-        //     };
-        //     $res->keys = $keys_vaccine;
-        //     $result_available_vaccine = $vaccine_table->map(function ($v_b, $i) use ($keys_vaccine) {
-        //         if (isset($keys_vaccine[$i]) && $keys_vaccine[$i] === $v_b['name']) {
-        //             return [$v_b['name'] => true];
-        //         } else {
-        //             return [$v_b['name'] => false];
-        //         }
-        //     })->collapse();
-        //     $res->available_vaccines = $result_available_vaccine;
-        //     return $res;
-        // });
         return Response::json(200, 'Success get spots', $spot);
+       
     }
 
     /**
