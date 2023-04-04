@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class SpotVaccine extends Model
 {
     use HasFactory;
+
+    protected $guarded = ['id'];
+
+    function vaccine()
+    {
+        return $this->belongsTo(Vaccine::class, 'vaccine_id', 'id');
+    }
 }

@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('medicals', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Spot::class, 'spot_id');
-            $table->foreignIdFor(User::class, 'user_id');
+            $table->foreignIdFor(User::class, 'user_id')->nullable();
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('spot_id')->references('id')->on('spots');

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Resources\AvailabelVaccineResource;
 use App\Http\Resources\SocietyResource;
 use Illuminate\Support\ServiceProvider;
 
@@ -20,7 +21,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
         SocietyResource::withoutWrapping();
     }
 }

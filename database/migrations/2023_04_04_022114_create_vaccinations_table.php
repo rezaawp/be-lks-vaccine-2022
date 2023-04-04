@@ -21,9 +21,11 @@ return new class extends Migration
             $table->date('date');
             $table->foreignIdFor(Society::class, 'society_id');
             $table->foreignIdFor(Spot::class, 'spot_id');
-            $table->foreignIdFor(Vaccine::class, 'vaccine_id');
-            $table->foreignIdFor(Medical::class, 'doctor_id');
-            $table->foreignIdFor(Medical::class, 'officer_id');
+            $table->foreignIdFor(Vaccine::class, 'vaccine_id')->nullable();
+            $table->foreignIdFor(Medical::class, 'doctor_id')->nullable();
+            $table->foreignIdFor(Medical::class, 'officer_id')->nullable();
+            $table->integer('queue');
+            $table->enum('status', ['in_queue', 'done'])->default('in_queue');
 
             $table->foreign('society_id')->references('id')->on('societies');
             $table->foreign('spot_id')->references('id')->on('spots');

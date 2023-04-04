@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Auth;
 use App\Helpers\Response;
+use App\Http\Resources\ConsultationResource;
 use App\Models\Consultation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -27,10 +28,18 @@ class ConsultationController extends Controller
         $status = 'pending';
 
         $consStored = Consultation::create([
+            'status' => $status,
             'society_id' => $societyId,
             'disease_history' => $dHistory,
-            'current_symptoms' => $h
+            'current_symptoms' => $cSymptoms
         ]);
+
+        if ($consStored) {
+            $dataResult =  ConsultationResource::collection(collect([$consStored]))->first();
+            return Response::json(200, 'Request consultation senf succesful', $dataResult);
+        } else {
+            return Response::json(500, "Error saved consultation");
+        }
     }
 
     function index(Request $re)
