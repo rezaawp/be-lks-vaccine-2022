@@ -11,5 +11,16 @@ class Vaccination extends Model
 
     protected $guarded = ['id'];
 
-    
+    function spot()
+    {
+        return $this->belongsTo(Spot::class, 'spot_id', 'id');
+    }
+
+    function vaccine() {
+        return $this->belongsTo(Vaccine::class, 'vaccine_id', 'id');
+    }
+
+    function vaccinator() {
+        return $this->belongsTo(Medical::class, 'doctor_id', 'id');
+    }
 }

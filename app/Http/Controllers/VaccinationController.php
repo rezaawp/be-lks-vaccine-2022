@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Auth;
 use App\Helpers\Response;
+use App\Http\Resources\VaccinationResource;
 use App\Models\Consultation;
 use App\Models\Vaccination;
 use Illuminate\Http\Request;
@@ -60,6 +61,14 @@ class VaccinationController extends Controller
             'spot_id' => $spotId,
             'queue' => $queue
         ]);
-        return  Response::json(200, 'vaccination registered successful', $vaccinationStored);
+
+        return Response::json(200, 'vaccination registered successful', $vaccinationStored);
+    }
+
+    function index()
+    {
+        $vaccination = Vaccination::with(['spot.regional', 'vaccine', 'vaccinator'])->get();
+        return VaccinationResource::collection($vaccination);
+        // return $vaccination;
     }
 }
