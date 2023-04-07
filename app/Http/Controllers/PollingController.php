@@ -60,8 +60,6 @@ class PollingController extends Controller
 
         $data['voted'] = Vote::where('user_id', $userId)->where('polling_id', $pollingId)->first() ? true : false;
 
-        // return  2 / 2 * 100;
-
         $data['polling'] = Polling::where('id', $pollingId)->with(['choises.votes' => function (Builder $q) use ($pollingId) {
             return $q->where('polling_id', $pollingId);
         }, 'user', 'votes' => function (Builder $q) use ($pollingId) {
