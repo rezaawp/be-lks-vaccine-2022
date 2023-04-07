@@ -10,6 +10,9 @@ class VoteController extends Controller
 {
     function store(Request $request)
     {
+        $userId = (int)Auth::user()->id;
+        $find_vote = Vote::where('user_id', $userId)->where('polling_id', $pollingid)->first();
+        if ($find_vote) return redirect()->back()->with('voteunique', 'Kamu tidak bisa vote 2x');
         if (!$request['choises']) {
             return redirect()->back()->withErrors([
                 'choisesRequired' => 'Choises wajib di isi'
@@ -18,17 +21,14 @@ class VoteController extends Controller
 
         $choiseId = (int)$request['choises'];
         $pollingid = (int)$request['pollingId'];
-        $userId = (int)Auth::user()->id;
 
         // Validasi bahwa vote adalah unique
-        $find_vote = Vote::where('user_id', $userId)->where('polling_id', $pollingid)->first();
-        if ($find_vote) return redirect()->back()->with('voteunique', 'Kamu tidak bisa vote 2x');
 
         $voteCreated = Vote::create([
             'user_id' => $userId,
             'polling_id' => $pollingid,
             'choise_id' => $choiseId
-    ]);
+        ]);
 
         if ($voteCreated) {
             return redirect()->back()->with('voted', 'Vote kamu berhasil di kirim');

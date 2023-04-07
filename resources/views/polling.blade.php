@@ -55,12 +55,15 @@
                                             </h5>
 
                                             @if (session('voted') || $voted)
-                                                <h6><span class="badge bg-warning">35%</span></h6>
+                                                <h6><span
+                                                        class="badge {{ $choise['persentase_vote'] > 70 ?  'bg-success' : 'bg-warning'}}">{{ $choise['persentase_vote'] }}%</span>
+                                                </h6>
                                             @endif
                                         </div>
                                         @if (session('voted') || $voted)
                                             <div class="progress">
-                                                <div class="progress-bar bg-success" style="width: 25%"></div>
+                                                <div class="progress-bar bg-success"
+                                                    style="width: {{ $choise['persentase_vote'] }}%"></div>
                                             </div>
                                         @endif
                                     </div>
@@ -74,12 +77,13 @@
                 </div>
 
                 <div class="col-md-4">
-                    <button class="btn btn-success mt-2" style="width: 100%" type="submit">Kirim Vote Saya</button>
+                    <button class="btn btn-success mt-2" {{ $voted ? 'disabled' : '' }} style="width: 100%"
+                        type="submit">Kirim Vote Saya</button>
 
                     <div class="bg-light mt-2 ps-3 pt-3" style="padding-bottom: 13%">
                         <b>Votes</b>
                         <h1 class="fw-bold">
-                            80
+                            {{$polling['votes_count']}}
                         </h1>
                     </div>
                 </div>

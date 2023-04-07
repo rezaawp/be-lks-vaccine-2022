@@ -72,7 +72,7 @@
                     <div class="d-flex justify-content-between mt-3">
                         <span>Sudah punya akun{{ ' ' }}?{{ ' ' }}<a href="/login"
                                 class="text-decoration-none">Login</a></span>
-                        <button class="btn btn-primary">Login</button>
+                        <button class="btn btn-primary">Register</button>
                     </div>
                 </form>
             </div>

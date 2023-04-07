@@ -6,6 +6,7 @@ use App\Models\Choise;
 use App\Models\Polling;
 use App\Models\Vote;
 use Carbon\Carbon;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -59,9 +60,30 @@ class PollingController extends Controller
 
         $data['voted'] = Vote::where('user_id', $userId)->where('polling_id', $pollingId)->first() ? true : false;
 
-        $data['polling'] = Polling::with(['choises', 'user'])->first();
+        // return  2 / 2 * 100;
+
+        $data['polling'] = Polling::where('id', $pollingId)->with(['choises.votes' => function (Builder $q) use ($pollingId) {
+            return $q->where('polling_id', $pollingId);
+        }, 'user', 'votes' => function (Builder $q) use ($pollingId) {
+            return $q->where('polling_id', $pollingId);
+        }])->withCount(['votes' => function (Builder $q) use ($pollingId) {
+            return $q->where('polling_id', $pollingId);
+        }])->get()->map(function ($poll) {
+            $count_votes = count($poll->votes);
+            $persentase_choises = collect($poll['choises'])->map(function ($choise, $index) use ($count_votes) {
+                $count_voted = count($choise['votes']);
+                // $choise['count_votes'] = $count_votes;
+                $choise['persentase_vote'] = $count_voted <= 0 ? 0 :  $count_voted / $count_votes * 100;
+                unset($choise['votes']);
+                return $choise;
+            });
+            unset($poll['votes']);
+            return $poll;
+        })->first();
+
+
         !$data['polling'] && abort(404);
-        $data['created_at'] = Carbon::parse($data['polling']['created_at'])->diffInMinutes() < 24 ? Carbon::parse($data['polling']['created_at'])->diffInMinutes() . ' menit yang lalu' : Carbon::parse($data['polling']['created_at'])->diffInDays() . ' hari yang lalu';
+        $data['created_at'] = Carbon::parse($data['polling']['created_at'])->diffInMinutes() < 24 * 60 ? Carbon::parse($data['polling']['created_at'])->diffInMinutes() . ' menit yang lalu' : Carbon::parse($data['polling']['created_at'])->diffInDays() . ' hari yang lalu';
 
         return view('polling', $data);
     }
