@@ -7,6 +7,7 @@ use App\Helpers\Response;
 use App\Http\Resources\VaccinationResource;
 use App\Models\Consultation;
 use App\Models\Vaccination;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -14,7 +15,6 @@ class VaccinationController extends Controller
 {
     function store(Request $req)
     {
-        // return date('Y-m-d', time() + (60 * 60 * 24 * 30));
         $validate = Validator::make($req->all(), [
             'date' => ['date'],
             'spot_id' => ['required']
@@ -27,7 +27,6 @@ class VaccinationController extends Controller
         $date = $req['date'] ? $req['date'] : date('Y-m-d');
         $spotId = $req['spot_id'];
 
-        $_30Hari =  time() + (60 * 60 * 24 * 30);
         $societyId = Auth::society()['id'];
         $find_vaccination = Vaccination::where('society_id', $societyId)->orderBy('id', 'desc')->first();
 
@@ -49,9 +48,8 @@ class VaccinationController extends Controller
 
         $dose = 1;
         if ($find_vaccination) {
-            // return $find_vaccination['date'];
             $dose = $find_vaccination['dose'] + 1;
-            if (strtotime($find_vaccination['date']) <= $_30Hari) {
+            if (Carbon::parse($find_vaccination['date'])->diffInDays() < 30) {
                 return Response::json(401, 'Wait at least +30 days from 1st vaccination');
             }
         }
@@ -71,6 +69,5 @@ class VaccinationController extends Controller
     {
         $vaccination = Vaccination::with(['spot.regional', 'vaccine', 'vaccinator'])->get();
         return VaccinationResource::collection($vaccination);
-        // return $vaccination;
     }
 }

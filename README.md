@@ -1,66 +1,154 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+* Menggunakan Resources untuk hasil responses API
+* Menggunakan class Carbon untuk menghitung selisih waktu
+Contoh : 
+```php
+if (Carbon::parse($find_vaccination['date'])->diffInDays() < 30) {
+    return Response::json(401, 'Wait at least +30 days from 1st vaccination');
+}
+```
+* Carbon juga bisa digunakan untuk memvalidasi deadline
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Deadline code :
+```php
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
-## About Laravel
+public function validateDeadline(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'deadline' => 'required|date|after_or_equal:today'
+    ]);
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+    if ($validator->fails()) {
+        return redirect()
+            ->back()
+            ->withErrors($validator)
+            ->withInput();
+    }
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+    // Jika validasi berhasil
+    return "Deadline masih valid";
+}
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+* Token API dibuat sendiri dengan kombinasi email + password yang udah di hash pakai md5
+    - Token di store di database
+    - Token adalah sebagai identitas user untuk fetch data dari database
 
-## Learning Laravel
+Generate Token Code in Model :
+```php
+class Token extends Model
+{
+    use HasFactory;
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+    protected $guarded = ['id'];
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+    static function generateToken($username, $password)
+    {
+        $tokenStored = Token::create([
+            'token' => md5($username . bcrypt('password')),
+            'user_id' => Auth::user()->id,
+            'expired' => time() + 60 * (int)env('EXP_TOKEN')
+        ]);
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+        if ($tokenStored) {
+            return $tokenStored['token'];
+        }
+    }
 
-## Laravel Sponsors
+    function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+    static function getExpired()
+    {
+        return time() + 60 * (int)env('EXP_TOKEN');
+    }
+}
+```
 
-### Premium Partners
+Auth Middleware Token md5 :
+```php
+class AuthMiddleware
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
+    public function handle(Request $request, Closure $next): Response
+    {
+        $token = $request->header('Authorization', false);
+        if ($token) {
+            $find_token = Token::where('token', $token)->first();
+            if ($find_token) {
+                if (time() < (int)$find_token['expired']) {
+                    return $next($request);
+                }
+            }
+        }
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+        return HelpersResponse::json(401, 'Invalid token', [], 'Your token is invalid');
+    }
+}
+```
 
-## Contributing
+Ada Resource Di Dalam Resource :
+```php
+class SocietyResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'name' => $this->name,
+            'born_date' => $this->society->born_date,
+            'gender' => $this->society->gender,
+            'address' => $this->society->address,
+            'token' => $this->token,
+            'regional' => RegionalResource::collection(collect([$this->society->regional]))->first()
+            // 'regional' => $this->regio
+        ];
+    }
+}
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+* Resource::collection() argumennya harus berupa array collection. Kalau bukan collection, liat contoh cara ngubah collection kaya diatas
+* Kode di split / di pisah menjadi beberapa bagian supaya mudah di maintance
 
-## Code of Conduct
+Contoh splitting routes API :
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```php
+<?php
 
-## Security Vulnerabilities
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "api" middleware group. Make something great!
+|
+*/
 
-## License
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+require(__DIR__ . '/api/spot.php');
+require(__DIR__ . '/api/auth.php');
+require(__DIR__ . '/api/consultation.php');
+require(__DIR__ . '/api/vaccination.php');
+
+```
