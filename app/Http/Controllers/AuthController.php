@@ -14,9 +14,6 @@ class AuthController extends Controller
 {
     function login(Request $req)
     {
-        // return date('Y-m-d h:i:s', );
-        // return (time() > time() - 60);
-
         $validasi = Validator::make($req->all(), [
             'id_card_number' => ['required', 'min:8', 'max:8'],
             'password' => ['required']
@@ -25,7 +22,7 @@ class AuthController extends Controller
         if ($validasi->fails()) {
             return Response::json(401, 'ID Card Number or Password incorrect', $validasi->errors());
         }
-        
+
         $idCardNumber = $req['id_card_number'];
         $password = $req['password'];
 
@@ -40,6 +37,8 @@ class AuthController extends Controller
             $result = SocietyResource::collection(collect([$user]))->first();
             return Response::json(200, 'Success Login', $result);
         }
+
+        return Response::json(401, 'Unauthorized', [], "ID card number or password incorrect");
     }
 
     function logout(Request $req)

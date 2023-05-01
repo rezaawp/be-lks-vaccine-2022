@@ -49,7 +49,7 @@ class VaccinationController extends Controller
         $dose = 1;
         if ($find_vaccination) {
             $dose = $find_vaccination['dose'] + 1;
-            if (Carbon::parse($find_vaccination['date'])->diffInDays() < 30) {
+            if (Carbon::parse($find_vaccination['date'])->diffInDays($date) < 30) { // diffInDays() tergantung sama waktu hari ini tapi kalo memasukan di argumen pertama, itu tergantung sama $date di argumen pertama tersebut
                 return Response::json(401, 'Wait at least +30 days from 1st vaccination');
             }
         }

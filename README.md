@@ -2,7 +2,7 @@
 * Menggunakan class Carbon untuk menghitung selisih waktu
 Contoh : 
 ```php
-if (Carbon::parse($find_vaccination['date'])->diffInDays() < 30) {
+if (Carbon::parse($find_vaccination['date'])->diffInDays() < 30) { // diffInDays() tergantung sama waktu hari ini tapi kalo memasukan di argumen pertama, itu tergantung sama $date di argumen pertama tersebut
     return Response::json(401, 'Wait at least +30 days from 1st vaccination');
 }
 ```

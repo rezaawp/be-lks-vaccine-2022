@@ -44,5 +44,8 @@ class ConsultationController extends Controller
 
     function index(Request $re)
     {
+        $society_id = Auth::society()['id'];
+        $consultations = Consultation::where('society_id', $society_id)->get();
+        return Response::json(200, 'Success get data', $consultations);
     }
 }
