@@ -1,0 +1,232 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "lks",
+    "dateExported": "2023-05-01T13:08:21.731Z",
+    "version": "1.1",
+    "folders": [
+        {
+            "_id": "23031a41-4d39-4df1-b54b-bf993943c2c6",
+            "name": "vaksin",
+            "containerId": "",
+            "created": "2023-05-01T11:30:02.287Z",
+            "sortNum": 10000
+        },
+        {
+            "_id": "b6e25324-7739-4b32-b6e6-1470434da43c",
+            "name": "auth",
+            "containerId": "23031a41-4d39-4df1-b54b-bf993943c2c6",
+            "created": "2023-05-01T11:34:55.436Z",
+            "sortNum": 20000
+        },
+        {
+            "_id": "ae8a4358-889f-4c0a-a737-2a6a13de2ce2",
+            "name": "consultation",
+            "containerId": "23031a41-4d39-4df1-b54b-bf993943c2c6",
+            "created": "2023-05-01T11:42:26.505Z",
+            "sortNum": 30000
+        },
+        {
+            "_id": "7d108d42-4bd7-4822-90cb-6f1712bc2f1a",
+            "name": "spot",
+            "containerId": "23031a41-4d39-4df1-b54b-bf993943c2c6",
+            "created": "2023-05-01T11:49:57.146Z",
+            "sortNum": 40000
+        },
+        {
+            "_id": "52be6d82-0c70-4021-828e-de896471786a",
+            "name": "vaccination",
+            "containerId": "23031a41-4d39-4df1-b54b-bf993943c2c6",
+            "created": "2023-05-01T12:49:17.348Z",
+            "sortNum": 50000
+        }
+    ],
+    "requests": [
+        {
+            "_id": "99b73b93-4fd1-4b3d-8ebf-b414fd3616e1",
+            "colId": "d6d454ee-f819-4983-90e7-dd0793606a38",
+            "containerId": "b6e25324-7739-4b32-b6e6-1470434da43c",
+            "name": "login",
+            "url": "http://localhost:8000/api/v1/auth/login?id_card_number=12341234&password=12341234",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2023-05-01T11:35:05.260Z",
+            "modified": "2023-05-01T11:39:06.401Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "id_card_number",
+                    "value": "12341234",
+                    "isPath": false
+                },
+                {
+                    "name": "password",
+                    "value": "12341234",
+                    "isPath": false
+                }
+            ],
+            "tests": []
+        },
+        {
+            "_id": "71ad2cc2-dd4b-4722-9655-cefe993dae85",
+            "colId": "d6d454ee-f819-4983-90e7-dd0793606a38",
+            "containerId": "b6e25324-7739-4b32-b6e6-1470434da43c",
+            "name": "logout",
+            "url": "http://localhost:8000/api/v1/auth/logout",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2023-05-01T11:40:30.813Z",
+            "modified": "2023-05-01T11:41:13.245Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "940dee7a288f2386ebd267f8224f5cb6"
+                }
+            ],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "e67fd089-6825-4298-8ecc-0df914acac12",
+            "colId": "d6d454ee-f819-4983-90e7-dd0793606a38",
+            "containerId": "ae8a4358-889f-4c0a-a737-2a6a13de2ce2",
+            "name": "store",
+            "url": "http://localhost:8000/api/v1/consultations?disease_history=Diesease History&current_symptoms=current_symptoms",
+            "method": "POST",
+            "sortNum": 40000,
+            "created": "2023-05-01T11:42:40.454Z",
+            "modified": "2023-05-01T11:44:31.864Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "f89225a291f5512a02e4a2b471483820"
+                }
+            ],
+            "params": [
+                {
+                    "name": "disease_history",
+                    "value": "Diesease History",
+                    "isPath": false
+                },
+                {
+                    "name": "current_symptoms",
+                    "value": "current_symptoms",
+                    "isPath": false
+                }
+            ],
+            "tests": []
+        },
+        {
+            "_id": "568238fd-8bea-4c21-862e-48a4cc38b8e6",
+            "colId": "d6d454ee-f819-4983-90e7-dd0793606a38",
+            "containerId": "ae8a4358-889f-4c0a-a737-2a6a13de2ce2",
+            "name": "index",
+            "url": "http://localhost:8000/api/v1/consultations",
+            "method": "GET",
+            "sortNum": 50000,
+            "created": "2023-05-01T11:45:39.653Z",
+            "modified": "2023-05-01T11:48:58.565Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "f89225a291f5512a02e4a2b471483820"
+                }
+            ],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "2ca65859-3b9b-4740-aaaf-99f6be035895",
+            "colId": "d6d454ee-f819-4983-90e7-dd0793606a38",
+            "containerId": "7d108d42-4bd7-4822-90cb-6f1712bc2f1a",
+            "name": "index",
+            "url": "http://localhost:8000/api/v1/spots",
+            "method": "GET",
+            "sortNum": 70000,
+            "created": "2023-05-01T11:50:33.305Z",
+            "modified": "2023-05-01T11:50:58.124Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "f89225a291f5512a02e4a2b471483820"
+                }
+            ],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "c2355cac-6ff2-4b43-8414-9a66a8b83bee",
+            "colId": "d6d454ee-f819-4983-90e7-dd0793606a38",
+            "containerId": "7d108d42-4bd7-4822-90cb-6f1712bc2f1a",
+            "name": "show",
+            "url": "http://localhost:8000/api/v1/spots/1",
+            "method": "GET",
+            "sortNum": 80000,
+            "created": "2023-05-01T12:46:46.231Z",
+            "modified": "2023-05-01T12:48:44.015Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "9c8e67d58eb5be81c4d99383a647aaf5"
+                }
+            ],
+            "params": [
+                {
+                    "name": "date",
+                    "value": "2023-05-02",
+                    "isDisabled": true,
+                    "isPath": false
+                }
+            ],
+            "tests": []
+        },
+        {
+            "_id": "430eb8a3-09c2-4806-b746-dea4f31de8d8",
+            "colId": "d6d454ee-f819-4983-90e7-dd0793606a38",
+            "containerId": "52be6d82-0c70-4021-828e-de896471786a",
+            "name": "store",
+            "url": "http://localhost:8000/api/v1/vaccinations?spot_id=1&date=2023-06-02",
+            "method": "POST",
+            "sortNum": 100000,
+            "created": "2023-05-01T12:49:28.907Z",
+            "modified": "2023-05-01T13:02:57.677Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "9c8e67d58eb5be81c4d99383a647aaf5"
+                }
+            ],
+            "params": [
+                {
+                    "name": "spot_id",
+                    "value": "1",
+                    "isPath": false
+                },
+                {
+                    "name": "date",
+                    "value": "2023-06-02",
+                    "isPath": false
+                }
+            ],
+            "tests": []
+        },
+        {
+            "_id": "14e123ce-2ef5-4325-83ea-6ddba5ac5960",
+            "colId": "d6d454ee-f819-4983-90e7-dd0793606a38",
+            "containerId": "52be6d82-0c70-4021-828e-de896471786a",
+            "name": "index",
+            "url": "http://localhost:8000/api/v1/vaccinations",
+            "method": "GET",
+            "sortNum": 110000,
+            "created": "2023-05-01T13:04:49.769Z",
+            "modified": "2023-05-01T13:05:06.822Z",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "value": "9c8e67d58eb5be81c4d99383a647aaf5"
+                }
+            ],
+            "params": [],
+            "tests": []
+        }
+    ]
+}
