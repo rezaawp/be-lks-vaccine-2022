@@ -25,6 +25,7 @@ class AuthController extends Controller
         if ($validasi->fails()) {
             return Response::json(401, 'ID Card Number or Password incorrect', $validasi->errors());
         }
+        
         $idCardNumber = $req['id_card_number'];
         $password = $req['password'];
 

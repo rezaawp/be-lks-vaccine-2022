@@ -15,7 +15,7 @@ class Token extends Model
     static function generateToken($username, $password)
     {
         $tokenStored = Token::create([
-            'token' => md5($username . bcrypt('password')),
+            'token' => md5($username . bcrypt($password)),
             'user_id' => Auth::user()->id,
             'expired' => time() + 60 * (int)env('EXP_TOKEN')
         ]);
