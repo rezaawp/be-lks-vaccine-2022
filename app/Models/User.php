@@ -30,6 +30,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
+        'created_at',
         'password',
         'remember_token',
     ];
@@ -43,7 +44,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    function society(){
+    function society()
+    {
         return $this->hasOne(Society::class, 'user_id', 'id');
     }
 }
